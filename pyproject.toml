@@ -1,0 +1,19 @@
+[project]
+name = "rag-pdf"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=1.5.8",
+    "groq>=1.2.0",
+    "langchain>=1.2.15",
+    "langchain-chroma>=1.1.0",
+    "langchain-community>=0.4.1",
+    "langchain-openai>=1.1.14",
+    "langchain-text-splitters>=1.1.2",
+    "openai>=2.32.0",
+    "pypdf>=6.10.2",
+    "python-dotenv>=1.2.2",
+    "rich>=15.0.0",
+]
