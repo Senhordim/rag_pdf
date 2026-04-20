@@ -7,7 +7,7 @@ Pipeline de **Retrieval-Augmented Generation (RAG)** para consulta de documentos
 1. **Carregamento** — lê todos os PDFs da pasta `assets/`
 2. **Chunking** — divide os documentos em pedaços de 2.000 caracteres (com overlap de 500) usando `RecursiveCharacterTextSplitter`
 3. **Vetorização** — gera embeddings via `OpenAIEmbeddings` e persiste no banco vetorial ChromaDB (pasta `db/`)
-4. **Consulta** — (a implementar) recupera chunks relevantes e gera respostas com um LLM
+4. **Consulta** — recebe uma pergunta do usuário, busca os 3 chunks mais relevantes (score ≥ 0.7) e gera uma resposta com `ChatOpenAI`
 
 ## Estrutura
 
@@ -18,7 +18,7 @@ rag_pdf/
 ├── src/
 │   └── db/
 │       └── vector_db.py   # Carregamento, chunking e vetorização
-├── main.py
+├── main.py          # Interface de consulta (perguntas ao banco vetorial)
 ├── pyproject.toml
 └── .env             # Variáveis de ambiente (não versionado)
 ```
@@ -42,7 +42,7 @@ cp .env.example .env
 
 ## Uso
 
-### Indexar PDFs
+### 1. Indexar PDFs
 
 Coloque os arquivos PDF na pasta `assets/` e execute:
 
@@ -50,7 +50,15 @@ Coloque os arquivos PDF na pasta `assets/` e execute:
 uv run src/db/vector_db.py
 ```
 
-O script carrega os PDFs, cria os chunks e persiste os embeddings no ChromaDB.
+Carrega os PDFs, cria os chunks e persiste os embeddings no ChromaDB.
+
+### 2. Consultar documentos
+
+```bash
+uv run main.py
+```
+
+Digite sua pergunta no terminal. O sistema busca os trechos mais relevantes e gera uma resposta baseada no conteúdo dos PDFs indexados. Caso nenhum trecho com relevância ≥ 0.7 seja encontrado, informa que não há informação suficiente.
 
 ## Dependências principais
 
@@ -58,9 +66,8 @@ O script carrega os PDFs, cria os chunks e persiste os embeddings no ChromaDB.
 |---|---|
 | `langchain` + `langchain-community` | Orquestração do pipeline RAG |
 | `langchain-chroma` | Integração com ChromaDB |
-| `langchain-openai` | Embeddings via OpenAI |
+| `langchain-openai` | Embeddings e LLM via OpenAI |
 | `chromadb` | Banco de dados vetorial local |
 | `pypdf` | Leitura de arquivos PDF |
 | `python-dotenv` | Carregamento de variáveis de ambiente |
-| `groq` | Alternativa de LLM via Groq |
 | `rich` | Output formatado no terminal |
